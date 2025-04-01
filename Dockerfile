@@ -19,8 +19,9 @@ RUN apt-get update && \
     mv docker/* /usr/bin/ && \
     rm -rf docker-latest.tgz
 
-# Aggiungi Jenkins al gruppo sudo per evitare di usare password
-RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
+# Crea l'utente 'jenkins' e aggiungilo al gruppo sudo
+RUN useradd -m jenkins && \
+    echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 # Crea una directory per il Docker socket e configura i permessi
 RUN mkdir -p /var/run/docker.sock && \
