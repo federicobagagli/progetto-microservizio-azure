@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git credentialsId: 'github-ssh-key', url: 'git@github.com:federicobagagli/microservice-demo.git', branch: 'main'
+                git credentialsId: 'github-ssh-key', url: 'git@github.com:federicobagagli/microservice-demo.git', branch: 'master'
             }
         }
 
