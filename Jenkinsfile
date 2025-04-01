@@ -15,7 +15,12 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                script {
+                    // Usa un'immagine Docker Maven ufficiale per eseguire il build
+                    docker.image('maven:3.8.1-jdk-11').inside {
+                        sh 'mvn clean package'
+                    }
+                }
             }
         }
 
