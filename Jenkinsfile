@@ -4,8 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = "microservice-demo"
         DOCKER_HUB_USER = "federik1982"
+        DOCKER_HOST = "npipe:////./pipe/docker_engine"
     }
-
 
 
     stages {
