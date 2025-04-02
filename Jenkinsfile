@@ -26,14 +26,20 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest ."
+                script {
+                    // Usa Docker Pipeline per costruire l'immagine
+                    docker.build("${DOCKER_HUB_USER}/${IMAGE_NAME}:latest")
+                }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh "docker push ${DOCKER_HUB_USER}/${IMAGE_NAME}:latest"
+                script {
+                    // Effettua il login a Docker Hub e push dell'immagine
+                    docker.withRegistry('', 'docker-hub-credentials') {
+                        docker.image("${DOCKER_HUB_USER}/${IMAGE_NAME}:latest").push()
+                    }
                 }
             }
         }
