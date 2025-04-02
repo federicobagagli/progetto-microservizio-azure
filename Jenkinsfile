@@ -6,7 +6,17 @@ pipeline {
         DOCKER_HUB_USER = "federik1982"
     }
 
+
+
     stages {
+
+        stage('Test Docker') {
+            steps {
+                script {
+                    sh 'docker --version'
+                }
+            }
+        }
         stage('Checkout') {
             steps {
                 git credentialsId: 'github-ssh-key', url: 'https://github.com/federicobagagli/microservice-demo.git', branch: 'master'
