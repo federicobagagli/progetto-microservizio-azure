@@ -46,6 +46,27 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>1.16.0</version>
+				<configuration>
+					<!-- Il gruppo di risorse Azure -->
+					<resourceGroup>rg-azure-demo</resourceGroup>
+					<!-- Nome univoco dell'app su Azure -->
+					<appName>federico-azure-ms-12345</appName>
+					<!-- Regione in cui fare il deploy -->
+					<region>westeurope</region>
+					<!-- Piano di prezzo per l'App Service -->
+					<pricingTier>B1</pricingTier>
+					<!-- Configurazione runtime (Java 17 su Linux) -->
+					<runtime>
+						<os>linux</os>
+						<javaVersion>Java 17</javaVersion>
+						<webContainer>Java SE</webContainer>
+					</runtime>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
