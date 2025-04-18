@@ -16,12 +16,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.4</version> <!-- Sostituisci con la versione di Spring Boot desiderata -->
+		<version>3.2.5</version> <!-- Sostituisci con la versione di Spring Boot desiderata -->
 		<relativePath/> <!-- No need to specify relative path, Spring Boot is managing versions -->
 	</parent>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>21</java.version>
 	</properties>
 
 	<dependencies>
@@ -47,9 +47,22 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<release>21</release>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.1.2</version> <!-- 👈 Versione aggiornata -->
+			</plugin>
+			<plugin>
 				<groupId>com.microsoft.azure</groupId>
 				<artifactId>azure-webapp-maven-plugin</artifactId>
-				<version>1.16.0</version>
+				<version>2.13.0</version>
 				<configuration>
 					<!-- Il gruppo di risorse Azure -->
 					<resourceGroup>rg-azure-demo</resourceGroup>
@@ -60,10 +73,6 @@
 					<!-- Piano di prezzo per l'App Service -->
 					<pricingTier>B1</pricingTier>
 					<!-- Configurazione runtime (Java 17 su Linux) -->
-					<runtime>
-						<os>linux</os>
-						<javaVersion>1.17</javaVersion> <!-- Correzione qui -->
-					</runtime>
 				</configuration>
 			</plugin>
 		</plugins>
