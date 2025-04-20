@@ -4,6 +4,7 @@ import com.example.demo.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.repository.BookRepository;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -49,5 +50,13 @@ public class BookService {
 
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
+    }
+
+    public List<Book> getFilteredBooks(String title, String author, String genre, Integer year) {
+        // Qui si applicano i filtri. Se un filtro è null o vuoto, non lo prendiamo in considerazione.
+        if (StringUtils.isEmpty(title) && StringUtils.isEmpty(author) && StringUtils.isEmpty(genre) && year == null) {
+            return bookRepository.findAll(); // Restituisce tutti i libri se non ci sono filtri
+        }
+        return bookRepository.findBooksWithFilters(title, author, genre, year);
     }
 }
