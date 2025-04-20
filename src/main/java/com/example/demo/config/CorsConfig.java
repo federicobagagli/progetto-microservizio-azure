@@ -12,9 +12,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // Permette l'accesso solo dal tuo dominio specifico
                 registry.addMapping("/**")
-                        .allowedOrigins("*") // oppure specifica il dominio React
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedOrigins("http://localhost:3000")  // Sostituisci con l'URL del tuo front-end
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);  // Se hai bisogno di inviare credenziali (cookies, sessioni, etc.)
             }
         };
     }
