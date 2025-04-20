@@ -74,7 +74,7 @@ public class BookService {
 
         if (year != null) {
             spec = spec.and((root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("year"), year));
+                    criteriaBuilder.equal(criteriaBuilder.function("YEAR", Integer.class, root.get("publishDate")), year));
         }
 
         return bookRepository.findAll(spec);
