@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.example.demo.repository.BookRepository;
 import org.springframework.util.StringUtils;
@@ -52,11 +53,30 @@ public class BookService {
         bookRepository.deleteById(id);
     }
 
-    public List<Book> getFilteredBooks(String title, String author, String genre, Integer year) {
-        // Qui si applicano i filtri. Se un filtro è null o vuoto, non lo prendiamo in considerazione.
-        if (StringUtils.isEmpty(title) && StringUtils.isEmpty(author) && StringUtils.isEmpty(genre) && year == null) {
-            return bookRepository.findAll(); // Restituisce tutti i libri se non ci sono filtri
+
+    public List<Book> findBooksWithFilters(String title, String author, String genre, Integer year) {
+        Specification<Book> spec = Specification.where(null);
+
+        if (title != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("title"), "%" + title + "%"));
         }
-        return bookRepository.findBooksWithFilters(title, author, genre, year);
+
+        if (author != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("author"), "%" + author + "%"));
+        }
+
+        if (genre != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("genre"), "%" + genre + "%"));
+        }
+
+        if (year != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("year"), year));
+        }
+
+        return bookRepository.findAll(spec);
     }
 }

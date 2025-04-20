@@ -19,20 +19,25 @@ public class BookController {
     private BookService bookService;
 
 
+
     @GetMapping
     public List<Book> getBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
-        return bookService.getFilteredBooks(title, author, genre, year);
+        return bookService.findBooksWithFilters(title, author, genre, year);
     }
+
+
 
 
     @GetMapping("/{all}")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
+
+
 
     @GetMapping("/{id}")
     public Optional<Book> getBookById(@PathVariable Long id) {
