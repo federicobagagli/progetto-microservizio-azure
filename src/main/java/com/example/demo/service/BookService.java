@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Book;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 @Service
 public class BookService {
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
     @Autowired
     private BookRepository bookRepository;
@@ -57,6 +60,12 @@ public class BookService {
     public List<Book> findBooksWithFilters(String title, String author, String genre, Integer year) {
         Specification<Book> spec = Specification.where(null);
 
+        logger.info("Esecuzione ricerca con i seguenti filtri:");
+        logger.info("Title: {}", title);
+        logger.info("Author: {}", author);
+        logger.info("Genre: {}", genre);
+        logger.info("Year: {}", year);
+
         if (title != null) {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.like(root.get("title"), "%" + title + "%"));
@@ -77,6 +86,11 @@ public class BookService {
                     criteriaBuilder.equal(criteriaBuilder.function("YEAR", Integer.class, root.get("publishDate")), year));
         }
 
-        return bookRepository.findAll(spec);
+        logger.info("Specifica creata: {}", spec);
+
+        List<Book> books = bookRepository.findAll(spec);
+        // Logga il risultato della query
+        logger.info("Numero di libri trovati: {}", books.size());
+        return books;
     }
 }
