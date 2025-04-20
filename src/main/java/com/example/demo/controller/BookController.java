@@ -32,7 +32,7 @@ public class BookController {
 
 
 
-    @GetMapping("/{all}")
+    @GetMapping("/all")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
     }
