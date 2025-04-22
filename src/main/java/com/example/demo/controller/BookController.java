@@ -61,7 +61,7 @@ public class BookController {
         return bookService.getBooksByPublishDateRange(start, end);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public Book addBook(@RequestBody Book book) {
         return bookService.addBook(book);
     }
