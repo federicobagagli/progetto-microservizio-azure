@@ -31,7 +31,7 @@ public class BookController {
 
 
 
-
+    @CrossOrigin(origins = "https://proud-pebble-0d5b12f03.6.azurestaticapps.net")
     @GetMapping("/all")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
