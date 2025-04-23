@@ -14,10 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 // Permette l'accesso solo dal tuo dominio specifico
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://localhost:3000",
-                                "https://proud-pebble-0d5b12f03.6.azurestaticapps.net"
-                        )
+                        .allowedOrigins("http://localhost:3000")  // Sostituisci con l'URL del tuo front-end
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);  // Se hai bisogno di inviare credenziali (cookies, sessioni, etc.)
