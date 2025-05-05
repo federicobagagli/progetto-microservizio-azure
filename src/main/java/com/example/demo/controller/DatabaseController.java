@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,24 +34,28 @@ public class DatabaseController {
     }
 
     // 4️⃣ Aggiungi una colonna
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/tables/{tableName}/addColumn")
     public String addColumn(@PathVariable String tableName, @RequestBody Map<String, String> columnDefinition) {
         return databaseService.addColumn(tableName, columnDefinition);
     }
 
     // 5️⃣ Elimina una colonna
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/tables/{tableName}/columns/{columnName}")
     public String deleteColumn(@PathVariable String tableName, @PathVariable String columnName) {
         return databaseService.deleteColumn(tableName, columnName);
     }
 
     // 6️⃣ Genera DDL di modifica (ma non esegue)
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/tables/{tableName}/generateDDLModification")
     public String generateDDLModification(@PathVariable String tableName, @RequestBody Map<String, Object> modifications) {
         return databaseService.generateDDLModification(tableName, modifications);
     }
 
     // 7️⃣ Applica modifiche direttamente
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/tables/{tableName}/applyModifications")
     public String applyModifications(@PathVariable String tableName, @RequestBody Map<String, Object> modifications) {
         return databaseService.applyModifications(tableName, modifications);
