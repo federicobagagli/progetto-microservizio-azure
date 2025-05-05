@@ -27,7 +27,7 @@ public class DatabaseService {
     public List<Map<String, Object>> getTableColumns(String tableName) {
         logger.info("Richiesta colonne per tabella: {}", tableName);
 
-        String sql = "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_TYPE " +
+        String sql = "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_TYPE, COLUMN_KEY " +
                 "FROM information_schema.COLUMNS " +
                 "WHERE TABLE_NAME = ? AND TABLE_SCHEMA = DATABASE()";
 
