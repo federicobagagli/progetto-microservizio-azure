@@ -2,8 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.service.BookService;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,14 +28,30 @@ public class BookController {
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
-        return bookService.findBooksWithFilters(title, author, genre, year);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return bookService.findBooksWithFilters(title, author, genre, year);
+        } else {
+            return bookService.findBooksWithFiltersAndUser(title, author, genre, year, username);
+        }
     }
+
 
 
 
     @GetMapping("/all")
     public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        return isAdmin ? bookService.getAllBooks() : bookService.getAllBooksByUser(username);
     }
 
 
@@ -45,12 +63,24 @@ public class BookController {
 
     @GetMapping("/author/{author}")
     public List<Book> getBooksByAuthor(@PathVariable String author) {
-        return bookService.getBooksByAuthor(author);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        return isAdmin ? bookService.getBooksByAuthor(author)
+                : bookService.getBooksByAuthorAndUser(author, username);
     }
 
     @GetMapping("/genre/{genre}")
     public List<Book> getBooksByGenre(@PathVariable String genre) {
-        return bookService.getBooksByGenre(genre);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        return isAdmin ? bookService.getBooksByGenre(genre)
+                : bookService.getBooksByGenreAndUser(genre, username);
     }
 
     @GetMapping("/publishDate")
@@ -60,10 +90,14 @@ public class BookController {
         return bookService.getBooksByPublishDateRange(start, end);
     }
 
+
     @PostMapping("/create")
     public Book addBook(@RequestBody Book book) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        book.setUser(username); // ✅ associazione con l'utente loggato
         return bookService.addBook(book);
     }
+
 
     @PutMapping("/{id}")
     public Book updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
@@ -72,7 +106,13 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable Long id) {
-        bookService.deleteBook(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        bookService.deleteBook(id, isAdmin ? null : username); // passiamo username solo se non admin
     }
+
 }
 

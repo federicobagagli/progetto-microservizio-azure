@@ -19,6 +19,8 @@ public class Book {
 
     private String genre;
 
+    private String user;
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -58,5 +60,13 @@ public class Book {
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

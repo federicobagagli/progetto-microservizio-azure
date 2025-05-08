@@ -1,35 +1,59 @@
 package com.example.demo;
 
 import com.example.demo.entity.Book;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import com.example.demo.repository.BookRepository;
 import com.example.demo.service.BookService;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = DemoApplication.class)
-@TestPropertySource(locations = "classpath:application.properties")
 public class BookServiceTest {
 
-    @Autowired
-    private BookService bookService;
+    private final BookRepository bookRepository = Mockito.mock(BookRepository.class);
+    private final BookService bookService = new BookService();
+
+    {
+        // Manual injection (no @Autowired in unit test)
+        bookService.setBookRepository(bookRepository);
+    }
 
     @Test
-    public void testAddBook() {
-        Book book = new Book();
-        book.setTitle("Test Book");
-        book.setAuthor("Test Author");
-        book.setGenre("Test Genre");
-        book.setPublishDate(new Date());
+    void getBooksByAuthorAndUser_shouldReturnBooks() {
+        Book book1 = new Book();
+        book1.setAuthor("Author A");
+        book1.setUser("user1");
 
-        System.out.println("Before saving book");
-        Book savedBook = bookService.addBook(book);
-        System.out.println("After saving book");
-        assertNotNull(savedBook);
-        assertEquals("Test Book", savedBook.getTitle());
+        Book book2 = new Book();
+        book2.setAuthor("Author A");
+        book2.setUser("user1");
+
+        List<Book> books = Arrays.asList(book1, book2);
+
+        when(bookRepository.findByAuthorAndUser("Author A", "user1")).thenReturn(books);
+
+        List<Book> result = bookService.getBooksByAuthorAndUser("Author A", "user1");
+
+        assertEquals(2, result.size());
+        verify(bookRepository, times(1)).findByAuthorAndUser("Author A", "user1");
+    }
+
+    @Test
+    void getBooksByGenreAndUser_shouldReturnBooks() {
+        Book book1 = new Book();
+        book1.setGenre("Fantasy");
+        book1.setUser("user2");
+
+        when(bookRepository.findByGenreAndUser("Fantasy", "user2")).thenReturn(List.of(book1));
+
+        List<Book> result = bookService.getBooksByGenreAndUser("Fantasy", "user2");
+
+        assertEquals(1, result.size());
+        assertEquals("Fantasy", result.get(0).getGenre());
+        verify(bookRepository).findByGenreAndUser("Fantasy", "user2");
     }
 }

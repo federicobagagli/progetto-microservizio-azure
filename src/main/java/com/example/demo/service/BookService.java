@@ -52,8 +52,16 @@ public class BookService {
         return null;
     }
 
-    public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
+    public void deleteBook(Long id, String username) {
+        Optional<Book> bookOpt = bookRepository.findById(id);
+        if (bookOpt.isPresent()) {
+            Book book = bookOpt.get();
+            if (username == null || username.equals(book.getUser())) {
+                bookRepository.deleteById(id);
+            } else {
+                throw new RuntimeException("Non puoi eliminare un libro che non ti appartiene.");
+            }
+        }
     }
 
 
@@ -93,4 +101,46 @@ public class BookService {
         logger.info("Numero di libri trovati: {}", books.size());
         return books;
     }
+
+    public List<Book> findBooksWithFiltersAndUser(String title, String author, String genre, Integer year, String username) {
+        Specification<Book> spec = Specification.where((root, query, cb) ->
+                cb.equal(root.get("user"), username)); // filtro base per utente
+
+        if (title != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(root.get("title"), "%" + title + "%"));
+        }
+        if (author != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(root.get("author"), "%" + author + "%"));
+        }
+        if (genre != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(root.get("genre"), "%" + genre + "%"));
+        }
+        if (year != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(cb.function("YEAR", Integer.class, root.get("publishDate")), year));
+        }
+
+        return bookRepository.findAll(spec);
+    }
+
+    public List<Book> getAllBooksByUser(String user) {
+        return bookRepository.findByUser(user);
+    }
+
+    public List<Book> getBooksByAuthorAndUser(String author, String user) {
+        return bookRepository.findByAuthorAndUser(author, user);
+    }
+
+    public List<Book> getBooksByGenreAndUser(String genre, String user) {
+        return bookRepository.findByGenreAndUser(genre, user);
+    }
+
+    // per test
+    public void setBookRepository(BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
 }

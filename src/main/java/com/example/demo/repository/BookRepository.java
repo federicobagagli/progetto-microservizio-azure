@@ -14,7 +14,11 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByGenre(String genre);
     List<Book> findByPublishDateBetween(Date startDate, Date endDate);
 
+    List<Book> findByUser(String user);
 
+    List<Book> findByAuthorAndUser(String author, String user);
+
+    List<Book> findByGenreAndUser(String genre, String user);
 
     List<Book> findAll(Specification<Book> spec);
 
