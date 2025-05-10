@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,66 +67,120 @@ public class RecordService {
         }
     }
 
-    public List<Record> findRecordsWithFilters(String albumTitle, String composerAuthor, String genre, Integer year) {
+    public List<Record> findRecordsWithFilters(
+            String cdNumber,
+            String drawer,
+            String composerAuthor,
+            String albumTitle,
+            String trackTitle,
+            String ensemble,
+            String compositionDate,
+            String performers,
+            String genre
+    ) {
         Specification<Record> spec = Specification.where(null);
 
-        logger.info("Running search with filters:");
-        logger.info("Album Title: {}", albumTitle);
-        logger.info("Composer/Author: {}", composerAuthor);
-        logger.info("Genre: {}", genre);
-        logger.info("Year: {}", year);
+        if (cdNumber != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("cdNumber"), "%" + cdNumber + "%"));
 
-        if (albumTitle != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("albumTitle"), "%" + albumTitle + "%"));
+        if (drawer != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("drawer"), "%" + drawer + "%"));
+
+        if (composerAuthor != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("composerAuthor"), "%" + composerAuthor + "%"));
+
+        if (albumTitle != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("albumTitle"), "%" + albumTitle + "%"));
+
+        if (trackTitle != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("trackTitle"), "%" + trackTitle + "%"));
+
+        if (ensemble != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("ensemble"), "%" + ensemble + "%"));
+
+        if (compositionDate != null) {
+            if (compositionDate.length() == 4) {
+                try {
+                    int yearValue = Integer.parseInt(compositionDate);
+                    spec = spec.and((root, query, cb) ->
+                            cb.equal(cb.function("YEAR", Integer.class, root.get("compositionDate")), yearValue));
+                } catch (NumberFormatException ignored) {}
+            } else {
+                try {
+                    Date exactDate = new SimpleDateFormat("yyyy-MM-dd").parse(compositionDate);
+                    spec = spec.and((root, query, cb) ->
+                            cb.equal(root.get("compositionDate"), exactDate));
+                } catch (ParseException ignored) {}
+            }
         }
 
-        if (composerAuthor != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("composerAuthor"), "%" + composerAuthor + "%"));
-        }
+        if (performers != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("performers"), "%" + performers + "%"));
 
-        if (genre != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("genre"), "%" + genre + "%"));
-        }
-
-        if (year != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.equal(cb.function("YEAR", Integer.class, root.get("compositionDate")), year));
-        }
-
-        List<Record> records = recordRepository.findAll(spec);
-        logger.info("Records found: {}", records.size());
-        return records;
-    }
-
-    public List<Record> findRecordsWithFiltersAndUser(String albumTitle, String composerAuthor, String genre, Integer year, String username) {
-        Specification<Record> spec = Specification.where((root, query, cb) ->
-                cb.equal(root.get("user"), username));
-
-        if (albumTitle != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("albumTitle"), "%" + albumTitle + "%"));
-        }
-
-        if (composerAuthor != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("composerAuthor"), "%" + composerAuthor + "%"));
-        }
-
-        if (genre != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.like(root.get("genre"), "%" + genre + "%"));
-        }
-
-        if (year != null) {
-            spec = spec.and((root, query, cb) ->
-                    cb.equal(cb.function("YEAR", Integer.class, root.get("compositionDate")), year));
-        }
+        if (genre != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("genre"), "%" + genre + "%"));
 
         return recordRepository.findAll(spec);
     }
+
+
+    public List<Record> findRecordsWithFiltersAndUser(
+            String cdNumber,
+            String drawer,
+            String composerAuthor,
+            String albumTitle,
+            String trackTitle,
+            String ensemble,
+            String compositionDate,
+            String performers,
+            String genre,
+            String username
+    ) {
+        Specification<Record> spec = Specification.where((root, query, cb) -> cb.equal(root.get("user"), username));
+
+        if (cdNumber != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("cdNumber"), "%" + cdNumber + "%"));
+
+        if (drawer != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("drawer"), "%" + drawer + "%"));
+
+        if (composerAuthor != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("composerAuthor"), "%" + composerAuthor + "%"));
+
+        if (albumTitle != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("albumTitle"), "%" + albumTitle + "%"));
+
+        if (trackTitle != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("trackTitle"), "%" + trackTitle + "%"));
+
+        if (ensemble != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("ensemble"), "%" + ensemble + "%"));
+
+        if (compositionDate != null) {
+            if (compositionDate.length() == 4) {
+                try {
+                    int yearValue = Integer.parseInt(compositionDate);
+                    spec = spec.and((root, query, cb) ->
+                            cb.equal(cb.function("YEAR", Integer.class, root.get("compositionDate")), yearValue));
+                } catch (NumberFormatException ignored) {}
+            } else {
+                try {
+                    Date exactDate = new SimpleDateFormat("yyyy-MM-dd").parse(compositionDate);
+                    spec = spec.and((root, query, cb) ->
+                            cb.equal(root.get("compositionDate"), exactDate));
+                } catch (ParseException ignored) {}
+            }
+        }
+
+        if (performers != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("performers"), "%" + performers + "%"));
+
+        if (genre != null)
+            spec = spec.and((root, query, cb) -> cb.like(root.get("genre"), "%" + genre + "%"));
+
+        return recordRepository.findAll(spec);
+    }
+
 
     public List<Record> getAllRecordsByUser(String user) {
         return recordRepository.findByUser(user);

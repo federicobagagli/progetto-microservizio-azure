@@ -22,20 +22,26 @@ public class RecordController {
 
     @GetMapping
     public List<Record> getRecords(
-            @RequestParam(required = false) String albumTitle,
+            @RequestParam(required = false) String cdNumber,
+            @RequestParam(required = false) String drawer,
             @RequestParam(required = false) String composerAuthor,
-            @RequestParam(required = false) String genre,
-            @RequestParam(required = false) Integer year) {
-
+            @RequestParam(required = false) String albumTitle,
+            @RequestParam(required = false) String trackTitle,
+            @RequestParam(required = false) String ensemble,
+            @RequestParam(required = false) String compositionDate,
+            @RequestParam(required = false) String performers,
+            @RequestParam(required = false) String genre
+    ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         return isAdmin
-                ? recordService.findRecordsWithFilters(albumTitle, composerAuthor, genre, year)
-                : recordService.findRecordsWithFiltersAndUser(albumTitle, composerAuthor, genre, year, username);
+                ? recordService.findRecordsWithFilters(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, compositionDate, performers, genre)
+                : recordService.findRecordsWithFiltersAndUser(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, compositionDate, performers, genre, username);
     }
+
 
     @GetMapping("/all")
     public List<Record> getAllRecords() {
