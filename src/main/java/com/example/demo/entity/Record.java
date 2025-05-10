@@ -30,6 +30,17 @@ public class Record {
     @Column(name = "ensemble")
     private String ensemble;
 
+    public String getSoloists() {
+        return soloists;
+    }
+
+    public void setSoloists(String soloists) {
+        this.soloists = soloists;
+    }
+
+    @Column(name = "soloists")
+    private String soloists;
+
     @Column(name = "composition_date")
     @Temporal(TemporalType.DATE)
     private Date compositionDate;

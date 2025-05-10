@@ -74,6 +74,7 @@ public class RecordService {
             String albumTitle,
             String trackTitle,
             String ensemble,
+            String soloists,
             String compositionDate,
             String performers,
             String genre
@@ -97,6 +98,11 @@ public class RecordService {
 
         if (ensemble != null)
             spec = spec.and((root, query, cb) -> cb.like(root.get("ensemble"), "%" + ensemble + "%"));
+
+        if (soloists != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(root.get("soloists"), "%" + soloists + "%"));
+        }
 
         if (compositionDate != null) {
             if (compositionDate.length() == 4) {
@@ -131,6 +137,7 @@ public class RecordService {
             String albumTitle,
             String trackTitle,
             String ensemble,
+            String soloists,
             String compositionDate,
             String performers,
             String genre,
@@ -155,6 +162,11 @@ public class RecordService {
 
         if (ensemble != null)
             spec = spec.and((root, query, cb) -> cb.like(root.get("ensemble"), "%" + ensemble + "%"));
+
+        if (soloists != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.like(root.get("soloists"), "%" + soloists + "%"));
+        }
 
         if (compositionDate != null) {
             if (compositionDate.length() == 4) {

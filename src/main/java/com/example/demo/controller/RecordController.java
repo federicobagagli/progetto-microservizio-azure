@@ -28,6 +28,7 @@ public class RecordController {
             @RequestParam(required = false) String albumTitle,
             @RequestParam(required = false) String trackTitle,
             @RequestParam(required = false) String ensemble,
+            @RequestParam(required = false) String soloists,
             @RequestParam(required = false) String compositionDate,
             @RequestParam(required = false) String performers,
             @RequestParam(required = false) String genre
@@ -38,8 +39,8 @@ public class RecordController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         return isAdmin
-                ? recordService.findRecordsWithFilters(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, compositionDate, performers, genre)
-                : recordService.findRecordsWithFiltersAndUser(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, compositionDate, performers, genre, username);
+                ? recordService.findRecordsWithFilters(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre)
+                : recordService.findRecordsWithFiltersAndUser(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, username);
     }
 
 
