@@ -31,7 +31,9 @@ public class RecordController {
             @RequestParam(required = false) String soloists,
             @RequestParam(required = false) String compositionDate,
             @RequestParam(required = false) String performers,
-            @RequestParam(required = false) String genre
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) String edition,
+            @RequestParam(required = false) String notes
     ) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -39,8 +41,8 @@ public class RecordController {
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
         return isAdmin
-                ? recordService.findRecordsWithFilters(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre)
-                : recordService.findRecordsWithFiltersAndUser(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, username);
+                ? recordService.findRecordsWithFilters(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, edition, notes)
+                : recordService.findRecordsWithFiltersAndUser(cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, username, edition, notes);
     }
 
 

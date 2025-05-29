@@ -54,7 +54,29 @@ public class Record {
     @Column(name = "user")
     private String user;
 
+    @Column(name = "edition")
+    private String edition;
+
+    @Column(name = "notes")
+    private String notes;
+
     // Getters and Setters
+
+    public String getEdition() {
+        return edition;
+    }
+
+    public void setEdition(String edition) {
+        this.edition = edition;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
     public Long getId() {
         return id;

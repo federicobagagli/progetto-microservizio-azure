@@ -77,7 +77,9 @@ public class RecordService {
             String soloists,
             String compositionDate,
             String performers,
-            String genre
+            String genre,
+            String edition,
+            String notes
     ) {
         Specification<Record> spec = Specification.where(null);
 
@@ -126,6 +128,14 @@ public class RecordService {
         if (genre != null)
             spec = spec.and((root, query, cb) -> cb.like(root.get("genre"), "%" + genre + "%"));
 
+        if (edition != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("edition"), "%" + edition + "%"));
+        }
+        if (notes != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("notes"), "%" + notes + "%"));
+        }
+        logger.info("Finding records with filters: cdNumber={}, drawer={}, composerAuthor={}, albumTitle={}, trackTitle={}, ensemble={}, soloists={}, compositionDate={}, performers={}, genre={}, edition={}, notes={}",
+                cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, edition, notes);
         return recordRepository.findAll(spec);
     }
 
@@ -141,7 +151,9 @@ public class RecordService {
             String compositionDate,
             String performers,
             String genre,
-            String username
+            String username,
+            String edition,
+            String notes
     ) {
         Specification<Record> spec = Specification.where((root, query, cb) -> cb.equal(root.get("user"), username));
 
@@ -189,6 +201,15 @@ public class RecordService {
 
         if (genre != null)
             spec = spec.and((root, query, cb) -> cb.like(root.get("genre"), "%" + genre + "%"));
+
+        if (edition != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("edition"), "%" + edition + "%"));
+        }
+        if (notes != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("notes"), "%" + notes + "%"));
+        }
+        logger.info("Finding records with filters: cdNumber={}, drawer={}, composerAuthor={}, albumTitle={}, trackTitle={}, ensemble={}, soloists={}, compositionDate={}, performers={}, genre={}, edition={}, notes={}",
+                cdNumber, drawer, composerAuthor, albumTitle, trackTitle, ensemble, soloists, compositionDate, performers, genre, edition, notes);
 
         return recordRepository.findAll(spec);
     }
